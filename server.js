@@ -27,7 +27,6 @@ const goodOptions = {
 };
 
 server.connection({
-  host: 'localhost',
   port: '8080'
 });
 
