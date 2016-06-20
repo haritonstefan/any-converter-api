@@ -4,13 +4,16 @@
 
 var saveFile = require('../common/index').save;
 var unoconv = require('unoconv2');
+var mmm = new require('mmmagic');
 var fs = require('fs');
+
+var magic = new mmm.Magic(mmm.MAGIC_MIME_TYPE | mmm.MAGIC_MIME_ENCODING);
 
 var doc = {
   register: function(server, options, next) {
     server.route({
       method: 'POST',
-      path: '/docx',
+      path: '/document',
       config: {
         payload: {
           output: 'stream',
@@ -18,12 +21,15 @@ var doc = {
           allow: 'multipart/form-data'
         },
         handler: function (request, reply) {
-          var path = saveFile(request.payload.file);
-          unoconv.convert(path, 'pdf', function(err, result) {
+          var file = request.payload.file;
+          var path = saveFile(file);
+          unoconv.convert(path, request.payload.to, function(err, result) {
             fs.unlinkSync(path);
-            return reply(result)
-              .type('application/pdf')
-              .header('Content-Disposition', 'attachment; filename="'+ path.split('/').pop());
+            magic.detect(result, function(err, mimeType) {
+              return reply(result)
+                .type(mimeType)
+                .header('Content-Disposition', 'attachment; filename="'+ file.hapi.filename);
+            })
           });
         }
       }

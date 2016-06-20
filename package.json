@@ -9,10 +9,12 @@
   "author": "Stefan Hariton <hariton.stefan@outlook.com>",
   "license": "ISC",
   "dependencies": {
+    "file-type": "^3.8.0",
     "good": "^7.0.1",
     "good-console": "^6.1.2",
     "good-squeeze": "^4.0.0",
     "hapi": "^13.4.1",
+    "mmmagic": "^0.4.4",
     "shortid": "^2.2.6",
     "unoconv2": "^1.0.0"
   }
