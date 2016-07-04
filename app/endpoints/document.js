@@ -6,11 +6,11 @@ var saveFile = require('../common/index').save;
 var unoconv = require('unoconv2');
 var fs = require('fs');
 
-var doc = {
+var document = {
   register: function(server, options, next) {
     server.route({
       method: 'POST',
-      path: '/docx',
+      path: '/document',
       config: {
         payload: {
           output: 'stream',
@@ -33,9 +33,9 @@ var doc = {
   }
 };
 
-doc.register.attributes = {
+document.register.attributes = {
   name: 'doc',
   version: '0.0.1'
 };
 
-module.exports = doc;
+module.exports = document;

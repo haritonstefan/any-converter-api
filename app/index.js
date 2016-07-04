@@ -6,7 +6,7 @@ var index = {
   register: function(server, options, next) {
     server.register([
       {
-        register: require('./endpoints/docx')
+        register: require('./endpoints/document')
       }
     ]);
 
