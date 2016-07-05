@@ -5,9 +5,13 @@
 var saveFile = require('../common/index').save;
 var unoconv = require('unoconv2');
 var fs = require('fs');
+var mmm = require('mmmagic');
+var Magic = mmm.Magic;
+var mime = require('mime-types');
 
 var document = {
   register: function(server, options, next) {
+    const magic = new Magic(mmm.MAGIC_MIME_TYPE);
     server.route({
       method: 'POST',
       path: '/document',
@@ -15,15 +19,24 @@ var document = {
         payload: {
           output: 'stream',
           parse: true,
-          allow: 'multipart/form-data'
+          maxBytes: '1073741824'
         },
         handler: function (request, reply) {
           var path = saveFile(request.payload.file);
-          unoconv.convert(path, 'pdf', function(err, result) {
+          var fileName = request.payload.file.hapi.filename;
+          unoconv.convert(path, request.payload.to, function(err, result) {
+            if (err) {
+              console.log(err);
+            }
             fs.unlinkSync(path);
-            return reply(result)
-              .type('application/pdf')
-              .header('Content-Disposition', 'attachment; filename="'+ path.split('/').pop());
+
+            magic.detect(result, (err, data) => {
+              return reply({
+                type: data,
+                file: result,
+                fileName: fileName.replace(fileName.split('.').pop(), mime.extension(data))
+              });
+            })
           });
         }
       }

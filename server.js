@@ -27,7 +27,10 @@ const goodOptions = {
 };
 
 server.connection({
-  port: '8080'
+  port: '8080',
+  routes: {
+    cors: true
+  }
 });
 
 server.route({

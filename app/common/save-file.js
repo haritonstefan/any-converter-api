@@ -12,7 +12,6 @@ const defaultDir = __dirname + '/../../uploads/';
 function save(file) {
   if (file) {
     var path = defaultDir + shortId.generate() + file.hapi.filename;
-
     var f = fs.createWriteStream(path);
 
     f.on('error', function(error) {
